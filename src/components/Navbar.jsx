@@ -87,6 +87,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
             >
               <MenuItem component={NavLink} to="/login" onClick={handleMenuClose}>Login</MenuItem>
               <MenuItem component={NavLink} to="/signup" onClick={handleMenuClose}>Sign Up</MenuItem>
+              <MenuItem component={NavLink} to="/profile" onClick={handleMenuClose}>Me</MenuItem>
             </Menu>
           </div>
         </Toolbar>
