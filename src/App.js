@@ -9,6 +9,11 @@ import LoginPage from './pages/LoginPage';
 import MarketsPage from './pages/MarketPage';
 import EarnPage from './pages/EarnPage';
 import Profile from './pages/Profile';
+import IncomeBalance from './pages/IncomeBalance';
+import Deposit from './pages/Deposit';
+import TransactionHistory from './pages/TransactionHistory';
+import SupportPage from './pages/SupportPage';
+import ErrorNotifications from './pages/ErrorNotifications';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -31,6 +36,11 @@ function App() {
           <Route path="/earn" element={<EarnPage />} />
           <Route path="/market" element={<MarketsPage />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/deposit" element={<Deposit />} />
+          <Route path="/income-balance" element={<IncomeBalance />} />
+          <Route path="/transaction-history" element={<TransactionHistory />} />
+          <Route path="/support" element={<SupportPage />} />
+          <Route path="/errors" element={<ErrorNotifications />} />
         </Routes>
       </Router>
     </ThemeProvider>

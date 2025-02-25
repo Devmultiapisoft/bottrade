@@ -37,7 +37,23 @@ const Navbar = ({ darkMode, setDarkMode }) => {
     { text: 'Trade', path: '/Trade' },
     { text: 'Markets', path: '/market' },
     { text: 'Futures', path: '/futures' },
+    { text: 'Deposit Balance', path: '/deposit' },
+    { text: 'Income Balance', path: '/income-balance' },
     { text: 'Earn', path: '/earn' },
+ 
+  ];
+  const menuItems2 = [
+    { text: 'Dashboard', path: '/' },
+    { text: 'Trade', path: '/Trade' },
+    { text: 'Markets', path: '/market' },
+    { text: 'Futures', path: '/futures' },
+    { text: 'Deposit Balance', path: '/deposit' },
+    { text: 'Income Balance', path: '/income-balance' },
+    { text: 'Transaction record', path: '/transaction-history' },
+    { text: 'Earn', path: '/earn' },
+    { text: 'Support', path: '/support' },
+    { text: 'Error Notification', path: '/errors' },
+    { text: 'System Setting', path: '/' },
   ];
 
   return (
@@ -47,11 +63,9 @@ const Navbar = ({ darkMode, setDarkMode }) => {
           <IconButton color="inherit" sx={{ display: { xs: 'block', md: 'none' } }} onClick={toggleDrawer(true)}>
             <MenuIcon />
           </IconButton>
-          {!isMobile && (
           <Typography component={NavLink} to="/" variant="h6" sx={{ fontWeight: 'bold', flexGrow: 1, textDecoration: 'none', color: 'inherit' }}>
             TRADEBOT
           </Typography>
-            )}
           {!isMobile && (
             <div style={{ display: 'flex', gap: '1rem' }}>
               {menuItems.map((item) => (
@@ -94,7 +108,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
       </StyledAppBar>
       <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
         <List sx={{ width: 250 }}>
-          {menuItems.map((item) => (
+          {menuItems2.map((item) => (
             <ListItem button key={item.text} component={NavLink} to={item.path} onClick={toggleDrawer(false)}>
               <ListItemText primary={item.text} />
             </ListItem>
