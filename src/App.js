@@ -25,7 +25,7 @@ function App() {
         <Routes>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/trade" element={<TradePage />} />
+          <Route path="/Trade" element={<TradePage />} />
           <Route path="/market" element={<MarketsPage />} />
         </Routes>
       </Router>

@@ -34,7 +34,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
   };
 
   const menuItems = [
-    { text: 'Trade', path: '/trade' },
+    { text: 'Trade', path: '/Trade' },
     { text: 'Markets', path: '/market' },
     { text: 'Futures', path: '/futures' },
     { text: 'Earn', path: '/earn' },

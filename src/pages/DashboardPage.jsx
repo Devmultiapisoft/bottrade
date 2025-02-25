@@ -17,7 +17,6 @@ import {
 } from '@mui/material';
 import {
   AccountBalanceWallet,
-  ShowChart,
   Paid,
   AccountTree,
   SwapHoriz,
@@ -26,8 +25,8 @@ import {
   VideoLibrary,
   GroupAdd,
 } from '@mui/icons-material';
-import ThreeDChart from '../components/ThreeDChart';
 import { PieChart, Pie, Cell } from 'recharts';
+import { NavLink } from 'react-router-dom';
 
 // Dummy data
 const portfolio = {
@@ -55,12 +54,13 @@ const transactions = [
 ];
 
 const DashboardPage = () => {
-    const [selectedCoin, setSelectedCoin] = useState('BTCUSDT');
+  const [selectedCoin, setSelectedCoin] = useState('BTCUSDT');
+
   return (
     <Box sx={{ p: 3 }}>
       {/* Top Row: Portfolio Overview */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={6} lg={4}>
           <Paper sx={{ p: 3, height: '100%' }}>
             <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
               <AccountBalanceWallet sx={{ fontSize: 40 }} />
@@ -93,7 +93,7 @@ const DashboardPage = () => {
         </Grid>
 
         {/* Asset Distribution Pie Chart */}
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={6} lg={4}>
           <Paper sx={{ p: 3, height: '100%', textAlign: 'center' }}>
             <Typography variant="h6" gutterBottom>
               <AccountTree sx={{ mr: 1 }} />
@@ -126,7 +126,7 @@ const DashboardPage = () => {
         </Grid>
 
         {/* Quick Actions */}
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={6} lg={4}>
           <Paper sx={{ p: 3, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
               <SwapHoriz sx={{ mr: 1 }} />
@@ -139,7 +139,7 @@ const DashboardPage = () => {
                     fullWidth
                     variant="contained"
                     color="primary"
-                    startIcon={<Paid />}
+                    startIcon={<Paid />} component={NavLink} to={action}
                   >
                     {action}
                   </Button>
@@ -150,22 +150,36 @@ const DashboardPage = () => {
         </Grid>
       </Grid>
 
-      {/* Market Section */}
-      <Grid container spacing={3} sx={{ mb: 3 }}>
-        {/* Main Chart */}
-        <Grid item xs={12} lg={8}>
-          <Paper sx={{ p: 2, height: 400 }}>
-            <Typography selectedCoin={selectedCoin} variant="h6" gutterBottom>
-              <ShowChart sx={{ mr: 1 }} />
-              BTC/USDT Price Chart
+      {/* Additional Sections */}
+      <Grid container spacing={3}>
+        {/* API Binding */}
+        <Grid item xs={12} md={6} lg={4}>
+          <Paper sx={{ p: 3, height: '100%' }}>
+            <Typography variant="h6" gutterBottom>
+              <Api sx={{ mr: 1 }} />
+              API Binding
             </Typography>
-            <ThreeDChart selectedCoin={selectedCoin} />
+            <Button variant="contained" color="secondary" fullWidth>
+              Connect API
+            </Button>
+          </Paper>
+        </Grid>
+
+        {/* Revenue Details */}
+        <Grid item xs={12} md={6} lg={4}>
+          <Paper sx={{ p: 3, height: '100%' }}>
+            <Typography variant="h6" gutterBottom>
+              <MonetizationOn sx={{ mr: 1 }} />
+              Revenue Details
+            </Typography>
+            <Typography variant="body2">Total Revenue: $12,345.67</Typography>
+            <Typography variant="body2">Monthly Growth: +5%</Typography>
           </Paper>
         </Grid>
 
         {/* Market Movers */}
-        <Grid item xs={12} lg={4}>
-          <Paper sx={{ p: 2, height: 400 }}>
+        <Grid item xs={12} md={6} lg={4}>
+          <Paper sx={{ p: 3, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
               Market Movers (24h)
             </Typography>
@@ -196,38 +210,10 @@ const DashboardPage = () => {
             </TableContainer>
           </Paper>
         </Grid>
-      </Grid>
-
-      {/* Additional Sections */}
-      <Grid container spacing={3}>
-        {/* API Binding */}
-        <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
-              <Api sx={{ mr: 1 }} />
-              API Binding
-            </Typography>
-            <Button variant="contained" color="secondary" fullWidth>
-              Connect API
-            </Button>
-          </Paper>
-        </Grid>
-
-        {/* Revenue Details */}
-        <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
-              <MonetizationOn sx={{ mr: 1 }} />
-              Revenue Details
-            </Typography>
-            <Typography variant="body2">Total Revenue: $12,345.67</Typography>
-            <Typography variant="body2">Monthly Growth: +5%</Typography>
-          </Paper>
-        </Grid>
 
         {/* Transactions */}
-        <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 3 }}>
+        <Grid item xs={12} md={6} lg={4}>
+          <Paper sx={{ p: 3, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
               Transactions
             </Typography>
@@ -257,8 +243,8 @@ const DashboardPage = () => {
         </Grid>
 
         {/* Videos */}
-        <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 3 }}>
+        <Grid item xs={12} md={6} lg={4}>
+          <Paper sx={{ p: 3, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
               <VideoLibrary sx={{ mr: 1 }} />
               Videos
@@ -270,8 +256,8 @@ const DashboardPage = () => {
         </Grid>
 
         {/* Reward Details */}
-        <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 3 }}>
+        <Grid item xs={12} md={6} lg={4}>
+          <Paper sx={{ p: 3, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
               <MonetizationOn sx={{ mr: 1 }} />
               Reward Details
@@ -282,8 +268,8 @@ const DashboardPage = () => {
         </Grid>
 
         {/* Invite Friends */}
-        <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 3 }}>
+        <Grid item xs={12} md={6} lg={4}>
+          <Paper sx={{ p: 3, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
               <GroupAdd sx={{ mr: 1 }} />
               Invite Friends
