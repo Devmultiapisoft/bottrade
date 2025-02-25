@@ -7,6 +7,7 @@ import DashboardPage from './pages/DashboardPage';
 import TradePage from './pages/TradePage';
 import LoginPage from './pages/LoginPage';
 import MarketsPage from './pages/MarketPage';
+import EarnPage from './pages/EarnPage';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -26,6 +27,7 @@ function App() {
           <Route path="/" element={<DashboardPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/Trade" element={<TradePage />} />
+          <Route path="/earn" element={<EarnPage />} />
           <Route path="/market" element={<MarketsPage />} />
         </Routes>
       </Router>
