@@ -1,205 +1,103 @@
-import React, { useEffect, useState } from 'react';
-import { 
-  Grid, 
-  Paper, 
-  Typography, 
-  TextField, 
-  Button, 
-  Select, 
-  MenuItem, 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableContainer, 
-  TableHead, 
-  TableRow,
-  Tabs,
-  Tab,
-  Box
-} from '@mui/material';
-import ThreeDChart from '../components/ThreeDChart';
+import React, { useState, useEffect } from 'react';
+import { AppBar, Toolbar, Typography, Select, MenuItem, Tabs, Tab, Paper, Grid, Box, Button } from '@mui/material';
+import axios from 'axios';
 
-// Dummy data for demonstration
-const initialCoins = [
-  { symbol: 'BTCUSDT', price: 42000, change: 2.5 },
-  { symbol: 'ETHUSDT', price: 3000, change: -1.2 },
-  { symbol: 'BNBUSDT', price: 350, change: 0.8 },
-  { symbol: 'XRPUSDT', price: 0.52, change: 0.3 },
-  { symbol: 'SOLUSDT', price: 98, change: 5.1 },
-  { symbol: 'ADAUSDT', price: 0.48, change: -0.7 },
-  { symbol: 'DOTUSDT', price: 8.2, change: 1.9 },
-  { symbol: 'DOGEUSDT', price: 0.08, change: 0.2 },
-  { symbol: 'LTCUSDT', price: 72, change: -0.4 },
-  { symbol: 'UNIUSDT', price: 6.3, change: 2.1 }
-];
+// Trading Tabs
+const searchTabs = ['All', 'Circle', 'One Shot', 'Stop Margin Call'];
 
-const TradePage = () => {
-  const [coins] = useState(initialCoins);
-  const [selectedCoin, setSelectedCoin] = useState('BTCUSDT');
-  const [orderType, setOrderType] = useState('market');
-  const [amount, setAmount] = useState('');
-  const [price, setPrice] = useState(42000);
-  const [marginLevel, setMarginLevel] = useState(15.2);
-  const [leverage, setLeverage] = useState(10);
-  const [tabValue, setTabValue] = useState(0);
+const TradingPage = () => {
+  const [searchTab, setSearchTab] = useState(0);
+  const [coins, setCoins] = useState([]);
 
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
+  // Fetch live coin data
+  useEffect(() => {
+    const fetchCoins = async () => {
+      try {
+        const response = await axios.get('https://api.binance.com/api/v3/ticker/24hr'); // Binance API
+        const filteredCoins = response.data.slice(0, 10).map(coin => ({
+          symbol: coin.symbol,
+          price: parseFloat(coin.lastPrice),
+          change: parseFloat(coin.priceChangePercent),
+          quantity: (Math.random() * 10).toFixed(4), // Simulated quantity
+        }));
+        setCoins(filteredCoins);
+      } catch (error) {
+        console.error('Error fetching Binance data:', error);
+      }
+    };
+
+    fetchCoins();
+  }, []);
+
+  // UI Card for Each Coin
+  const TradeCard = ({ coin, mode }) => {
+    const getModeStyles = () => {
+      switch (mode) {
+        case 'Circle': return { background: 'linear-gradient(to bottom, purple, blue)' };
+        case 'One Shot': return { background: 'linear-gradient(to bottom, red, orange)' };
+        case 'Stop Margin Call': return { background: 'linear-gradient(to bottom, black, gray)' };
+        default: return { background: 'linear-gradient(to bottom, green, blue)' };
+      }
+    };
+
+    return (
+      <Paper sx={{ p: 2, mt: 2, color: 'white', borderRadius: 2, ...getModeStyles() }}>
+        <Typography variant="h6">{coin.symbol} - {mode}</Typography>
+        <Grid container spacing={1}>
+          <Grid item xs={6}><Typography>Quantity: {coin.quantity}</Typography></Grid>
+          <Grid item xs={6}><Typography>Price: ${coin.price.toFixed(4)}</Typography></Grid>
+          <Grid item xs={6}>
+            <Typography>Change: <span style={{ color: coin.change < 0 ? 'red' : 'white' }}>{coin.change}%</span></Typography>
+          </Grid>
+        </Grid>
+        <Button variant="contained" sx={{ mt: 1 }}>Trade</Button>
+      </Paper>
+    );
   };
 
-  // Order book dummy data
-  const orderBook = {
-    bids: [
-      { price: 41950, amount: 0.5 },
-      { price: 41900, amount: 1.2 },
-    ],
-    asks: [
-      { price: 42050, amount: 0.8 },
-      { price: 42100, amount: 1.5 },
-    ],
-  };
-
-  const handleBuy = () => {
-    console.log(`Buy ${amount} ${selectedCoin} at ${price}`);
-    // Add actual buy logic here
-  };
-
-  const handleSell = () => {
-    console.log(`Sell ${amount} ${selectedCoin} at ${price}`);
-    // Add actual sell logic here
-  };
+  // Sections for Different Modes
+  const renderSection = (mode) => (
+    <Box>
+      {coins.map((coin, index) => (
+        <TradeCard key={index} coin={coin} mode={mode} />
+      ))}
+    </Box>
+  );
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom>Margin Trading</Typography>
-      
-      <Grid container spacing={3}>
-        {/* Left Column: Chart and Order Book */}
-        <Grid item xs={12} md={8}>
-          <Paper sx={{ p: 2, mb: 3, height: 500 }}>
-            <ThreeDChart selectedCoin={selectedCoin} />
-          </Paper>
-          
-          <Paper sx={{ p: 2 }}>
-            <Typography variant="h6" gutterBottom>Order Book</Typography>
-            <TableContainer>
-              <Table size="small">
-                <TableBody>
-                  {orderBook.asks.reverse().map((ask, index) => (
-                    <TableRow key={`ask-${index}`} sx={{ bgcolor: '#fff5f5' }}>
-                      <TableCell>{ask.price.toFixed(1)}</TableCell>
-                      <TableCell>{ask.amount.toFixed(3)}</TableCell>
-                    </TableRow>
-                  ))}
-                  <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-                    <TableCell colSpan={2} align="center">
-                      {price.toFixed(1)} USDT
-                    </TableCell>
-                  </TableRow>
-                  {orderBook.bids.map((bid, index) => (
-                    <TableRow key={`bid-${index}`} sx={{ bgcolor: '#f0fff4' }}>
-                      <TableCell>{bid.price.toFixed(1)}</TableCell>
-                      <TableCell>{bid.amount.toFixed(3)}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Paper>
-        </Grid>
+    <Box>
+      {/* Header */}
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6">Binance</Typography>
+          <Select defaultValue="Binance" sx={{ ml: 2, color: 'white' }}>
+            <MenuItem value="Binance">Binance</MenuItem>
+          </Select>
+        </Toolbar>
+      </AppBar>
 
-        {/* Right Column: Trading Panel */}
-        <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 2, mb: 3 }}>
-            <Typography variant="h6" gutterBottom>Margin Status</Typography>
-            <Grid container spacing={1}>
-              <Grid item xs={6}>
-                <Typography variant="body2">Margin Level:</Typography>
-                <Typography variant="body1" color={marginLevel > 10 ? 'success.main' : 'error.main'}>
-                  {marginLevel}x
-                </Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body2">Leverage:</Typography>
-                <Select
-                  value={leverage}
-                  onChange={(e) => setLeverage(e.target.value)}
-                  size="small"
-                  fullWidth
-                >
-                  {[5, 10, 20, 50, 100].map((lev) => (
-                    <MenuItem key={lev} value={lev}>{lev}x</MenuItem>
-                  ))}
-                </Select>
-              </Grid>
-            </Grid>
-          </Paper>
+      {/* Search and Tabs */}
+      <Paper sx={{ p: 2, mt: 2 }}>
+        <Typography variant="h6">Search Currency Name</Typography>
+        <Tabs value={searchTab} onChange={(e, newValue) => setSearchTab(newValue)} variant="scrollable" scrollButtons="auto">
+          {searchTabs.map((tab, index) => <Tab key={index} label={tab} />)}
+        </Tabs>
+      </Paper>
 
-          <Paper sx={{ p: 2 }}>
-            <Tabs value={tabValue} onChange={handleTabChange}>
-              <Tab label="Buy" />
-              <Tab label="Sell" />
-            </Tabs>
+      {/* Content Based on Tabs */}
+      <Box sx={{ p: 2 }}>
+        {searchTab === 0 && renderSection('All')}
+        {searchTab === 1 && renderSection('Circle')}
+        {searchTab === 2 && renderSection('One Shot')}
+        {searchTab === 3 && renderSection('Stop Margin Call')}
+      </Box>
 
-            <Box sx={{ mt: 2 }}>
-              <Select
-                fullWidth
-                value={selectedCoin}
-                onChange={(e) => setSelectedCoin(e.target.value)}
-                sx={{ mb: 2 }}
-              >
-                {coins.map((coin) => (
-                  <MenuItem key={coin.symbol} value={coin.symbol}>
-                    {coin.symbol} ({coin.change > 0 ? '+' : ''}{coin.change}%)
-                  </MenuItem>
-                ))}
-              </Select>
-
-              <Select
-                fullWidth
-                value={orderType}
-                onChange={(e) => setOrderType(e.target.value)}
-                sx={{ mb: 2 }}
-              >
-                <MenuItem value="market">Market Order</MenuItem>
-                <MenuItem value="limit">Limit Order</MenuItem>
-                <MenuItem value="stop">Stop Order</MenuItem>
-              </Select>
-
-              {orderType !== 'market' && (
-                <TextField
-                  fullWidth
-                  label="Price (USDT)"
-                  type="number"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  sx={{ mb: 2 }}
-                />
-              )}
-
-              <TextField
-                fullWidth
-                label="Amount"
-                type="number"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                sx={{ mb: 2 }}
-              />
-
-              <Button 
-                fullWidth 
-                variant="contained" 
-                color={tabValue === 0 ? 'success' : 'error'}
-                onClick={tabValue === 0 ? handleBuy : handleSell}
-              >
-                {tabValue === 0 ? 'Buy' : 'Sell'} {selectedCoin}
-              </Button>
-            </Box>
-          </Paper>
-        </Grid>
-      </Grid>
+      {/* Bottom Navigation */}
+      <Paper sx={{ position: 'fixed', bottom: 0, width: '100%', p: 2, textAlign: 'center', background: 'linear-gradient(to bottom, green, blue)' }}>
+        <Typography>Binance Balance: 0.0000</Typography>
+      </Paper>
     </Box>
   );
 };
 
-export default TradePage;
+export default TradingPage;
