@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { AppBar, Toolbar, Typography, Select, MenuItem, Tabs, Tab, Paper, Grid, Box, Button, TextField } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 // Sample Data
 const initialCoins = [
@@ -10,7 +11,7 @@ const initialCoins = [
 ];
 
 // Trade Card Component
-const TradeCard = ({ coin }) => (
+const TradeCard = ({ coin, onCycle }) => (
   <Paper sx={{ p: 2, mt: 2, background: 'linear-gradient(to bottom, #4bae54, rgb(39 153 220))', color: 'white', borderRadius: 2 }}>
     <Typography variant="h6">{coin.symbol}</Typography>
     <Grid container spacing={1}>
@@ -22,46 +23,46 @@ const TradeCard = ({ coin }) => (
         </Typography>
       </Grid>
     </Grid>
-    <Button variant="contained" sx={{ mt: 1 }}>Cycle</Button>
+    <Button variant="contained" sx={{ mt: 1 }} onClick={() => onCycle(coin)}>Cycle</Button>
   </Paper>
 );
 
 // Sections
-const AllSection = () => (
-  <Box>{initialCoins.map((coin, index) => <TradeCard key={index} coin={coin} />)}</Box>
+const AllSection = ({ onCycle }) => (
+  <Box>{initialCoins.map((coin, index) => <TradeCard key={index} coin={coin} onCycle={onCycle} />)}</Box>
 );
 
-const CircleSection = () => (
+const CircleSection = ({ onCycle }) => (
   <Box>
     {initialCoins.map((coin, index) => (
       <Paper key={index} sx={{ p: 2, mt: 2, background: 'linear-gradient(to bottom, #1976d2, #337da5)', color: 'white', borderRadius: 2 }}>
         <Typography variant="h6">{coin.symbol} - Circle</Typography>
         <Typography>Special Circle Mode Active</Typography>
-        <TradeCard coin={coin} />
+        <TradeCard coin={coin} onCycle={onCycle} />
       </Paper>
     ))}
   </Box>
 );
 
-const OneShotSection = () => (
+const OneShotSection = ({ onCycle }) => (
   <Box>
     {initialCoins.map((coin, index) => (
       <Paper key={index} sx={{ p: 2, mt: 2, background: 'linear-gradient(to bottom, #1976d2, #337da5)', color: 'white', borderRadius: 2 }}>
         <Typography variant="h6">{coin.symbol} - One Shot</Typography>
         <Typography>One-Time Trade Execution</Typography>
-        <TradeCard coin={coin} />
+        <TradeCard coin={coin} onCycle={onCycle} />
       </Paper>
     ))}
   </Box>
 );
 
-const StopMarginCallSection = () => (
+const StopMarginCallSection = ({ onCycle }) => (
   <Box>
     {initialCoins.map((coin, index) => (
       <Paper key={index} sx={{ p: 2, mt: 2, background: 'linear-gradient(to bottom, #1976d2, #337da5)', color: 'white', borderRadius: 2 }}>
         <Typography variant="h6">{coin.symbol} - Stop Margin Call</Typography>
         <Typography>Risk Management Activated</Typography>
-        <TradeCard coin={coin} />
+        <TradeCard coin={coin} onCycle={onCycle} />
       </Paper>
     ))}
   </Box>
@@ -69,9 +70,15 @@ const StopMarginCallSection = () => (
 
 // Main Trading Page
 const TradingPage = () => {
-  const [searchQuery, setSearchQuery] = useState('');   
+  const [searchQuery, setSearchQuery] = useState('');
   const [searchTab, setSearchTab] = useState(0);
   const searchTabs = ['All', 'Circle', 'One Shot', 'Stop Margin Call'];
+  const navigate = useNavigate();
+
+  const handleCycle = (coin) => {
+    // Navigate to the TradeDetails page with the coin symbol as a parameter
+    navigate(`/details/${coin.symbol}`);
+  };
 
   return (
     <Box>
@@ -105,10 +112,10 @@ const TradingPage = () => {
 
       {/* Render Sections Based on Tab */}
       <Box sx={{ p: 2 }}>
-        {searchTab === 0 && <AllSection />}
-        {searchTab === 1 && <CircleSection />}
-        {searchTab === 2 && <OneShotSection />}
-        {searchTab === 3 && <StopMarginCallSection />}
+        {searchTab === 0 && <AllSection onCycle={handleCycle} />}
+        {searchTab === 1 && <CircleSection onCycle={handleCycle} />}
+        {searchTab === 2 && <OneShotSection onCycle={handleCycle} />}
+        {searchTab === 3 && <StopMarginCallSection onCycle={handleCycle} />}
       </Box>
 
       {/* Bottom Navigation */}

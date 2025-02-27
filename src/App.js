@@ -14,6 +14,7 @@ import Deposit from './pages/Deposit';
 import TransactionHistory from './pages/TransactionHistory';
 import SupportPage from './pages/SupportPage';
 import ErrorNotifications from './pages/ErrorNotifications';
+import TradeDetails from './pages/TradeDetails';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -41,6 +42,7 @@ function App() {
           <Route path="/transaction-history" element={<TransactionHistory />} />
           <Route path="/support" element={<SupportPage />} />
           <Route path="/errors" element={<ErrorNotifications />} />
+          <Route path="/details/:symbol/:symbol" element={<TradeDetails />} />
         </Routes>
       </Router>
     </ThemeProvider>
