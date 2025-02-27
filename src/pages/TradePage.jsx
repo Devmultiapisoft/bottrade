@@ -1,68 +1,76 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { AppBar, Toolbar, Typography, Select, MenuItem, Tabs, Tab, Paper, Grid, Box, Button } from '@mui/material';
-import axios from 'axios';
 
-// Trading Tabs
-const searchTabs = ['All', 'Circle', 'One Shot', 'Stop Margin Call'];
+// Sample Data
+const initialCoins = [
+  { symbol: '1INCHDOWN/USDT', quantity: 0, price: 0.00000000, increase: 0 },
+  { symbol: '1INCH/USDT', quantity: 0, price: 0.24440000, increase: -4.702 },
+  { symbol: 'AAVE/USDT', quantity: 0, price: 205.47000000, increase: -1.278 },
+  { symbol: 'ADA/USDT', quantity: 0, price: 0.00000000, increase: 0 },
+];
 
+// Trade Card Component
+const TradeCard = ({ coin }) => (
+  <Paper sx={{ p: 2, mt: 2, background: 'linear-gradient(to bottom, green, #337da5)', color: 'white', borderRadius: 2 }}>
+    <Typography variant="h6">{coin.symbol}</Typography>
+    <Grid container spacing={1}>
+      <Grid item xs={6}><Typography>Quantity: {coin.quantity.toFixed(4)}</Typography></Grid>
+      <Grid item xs={6}><Typography>Price: {coin.price.toFixed(8)}</Typography></Grid>
+      <Grid item xs={6}>
+        <Typography>
+          Increase: <span style={{ color: coin.increase < 0 ? 'red' : 'white' }}>{coin.increase}</span>
+        </Typography>
+      </Grid>
+    </Grid>
+    <Button variant="contained" sx={{ mt: 1 }}>Cycle</Button>
+  </Paper>
+);
+
+// Sections
+const AllSection = () => (
+  <Box>{initialCoins.map((coin, index) => <TradeCard key={index} coin={coin} />)}</Box>
+);
+
+const CircleSection = () => (
+  <Box>
+    {initialCoins.map((coin, index) => (
+      <Paper key={index} sx={{ p: 2, mt: 2, background: 'linear-gradient(to bottom, #1976d2, #337da5)', color: 'white', borderRadius: 2 }}>
+        <Typography variant="h6">{coin.symbol} - Circle</Typography>
+        <Typography>Special Circle Mode Active</Typography>
+        <TradeCard coin={coin} />
+      </Paper>
+    ))}
+  </Box>
+);
+
+const OneShotSection = () => (
+  <Box>
+    {initialCoins.map((coin, index) => (
+      <Paper key={index} sx={{ p: 2, mt: 2, background: 'linear-gradient(to bottom, #1976d2, #337da5)', color: 'white', borderRadius: 2 }}>
+        <Typography variant="h6">{coin.symbol} - One Shot</Typography>
+        <Typography>One-Time Trade Execution</Typography>
+        <TradeCard coin={coin} />
+      </Paper>
+    ))}
+  </Box>
+);
+
+const StopMarginCallSection = () => (
+  <Box>
+    {initialCoins.map((coin, index) => (
+      <Paper key={index} sx={{ p: 2, mt: 2, background: 'linear-gradient(to bottom, #1976d2, #337da5)', color: 'white', borderRadius: 2 }}>
+        <Typography variant="h6">{coin.symbol} - Stop Margin Call</Typography>
+        <Typography>Risk Management Activated</Typography>
+        <TradeCard coin={coin} />
+      </Paper>
+    ))}
+  </Box>
+);
+
+// Main Trading Page
 const TradingPage = () => {
   const [searchTab, setSearchTab] = useState(0);
-  const [coins, setCoins] = useState([]);
-
-  // Fetch live coin data
-  useEffect(() => {
-    const fetchCoins = async () => {
-      try {
-        const response = await axios.get('https://api.binance.com/api/v3/ticker/24hr'); // Binance API
-        const filteredCoins = response.data.slice(0, 10).map(coin => ({
-          symbol: coin.symbol,
-          price: parseFloat(coin.lastPrice),
-          change: parseFloat(coin.priceChangePercent),
-          quantity: (Math.random() * 10).toFixed(4), // Simulated quantity
-        }));
-        setCoins(filteredCoins);
-      } catch (error) {
-        console.error('Error fetching Binance data:', error);
-      }
-    };
-
-    fetchCoins();
-  }, []);
-
-  // UI Card for Each Coin
-  const TradeCard = ({ coin, mode }) => {
-    const getModeStyles = () => {
-      switch (mode) {
-        case 'Circle': return { background: 'linear-gradient(to bottom, purple, blue)' };
-        case 'One Shot': return { background: 'linear-gradient(to bottom, red, orange)' };
-        case 'Stop Margin Call': return { background: 'linear-gradient(to bottom, black, gray)' };
-        default: return { background: 'linear-gradient(to bottom, green, blue)' };
-      }
-    };
-
-    return (
-      <Paper sx={{ p: 2, mt: 2, color: 'white', borderRadius: 2, ...getModeStyles() }}>
-        <Typography variant="h6">{coin.symbol} - {mode}</Typography>
-        <Grid container spacing={1}>
-          <Grid item xs={6}><Typography>Quantity: {coin.quantity}</Typography></Grid>
-          <Grid item xs={6}><Typography>Price: ${coin.price.toFixed(4)}</Typography></Grid>
-          <Grid item xs={6}>
-            <Typography>Change: <span style={{ color: coin.change < 0 ? 'red' : 'white' }}>{coin.change}%</span></Typography>
-          </Grid>
-        </Grid>
-        <Button variant="contained" sx={{ mt: 1 }}>Trade</Button>
-      </Paper>
-    );
-  };
-
-  // Sections for Different Modes
-  const renderSection = (mode) => (
-    <Box>
-      {coins.map((coin, index) => (
-        <TradeCard key={index} coin={coin} mode={mode} />
-      ))}
-    </Box>
-  );
+  const searchTabs = ['All', 'Circle', 'One Shot', 'Stop Margin Call'];
 
   return (
     <Box>
@@ -80,20 +88,22 @@ const TradingPage = () => {
       <Paper sx={{ p: 2, mt: 2 }}>
         <Typography variant="h6">Search Currency Name</Typography>
         <Tabs value={searchTab} onChange={(e, newValue) => setSearchTab(newValue)} variant="scrollable" scrollButtons="auto">
-          {searchTabs.map((tab, index) => <Tab key={index} label={tab} />)}
+          {searchTabs.map((tab, index) => (
+            <Tab key={index} label={tab} />
+          ))}
         </Tabs>
       </Paper>
 
-      {/* Content Based on Tabs */}
+      {/* Render Sections Based on Tab */}
       <Box sx={{ p: 2 }}>
-        {searchTab === 0 && renderSection('All')}
-        {searchTab === 1 && renderSection('Circle')}
-        {searchTab === 2 && renderSection('One Shot')}
-        {searchTab === 3 && renderSection('Stop Margin Call')}
+        {searchTab === 0 && <AllSection />}
+        {searchTab === 1 && <CircleSection />}
+        {searchTab === 2 && <OneShotSection />}
+        {searchTab === 3 && <StopMarginCallSection />}
       </Box>
 
       {/* Bottom Navigation */}
-      <Paper sx={{ position: 'fixed', bottom: 0, width: '100%', p: 2, textAlign: 'center', background: 'linear-gradient(to bottom, green, blue)' }}>
+      <Paper sx={{ position: 'fixed', bottom: 0, width: '100%', p: 2, textAlign: 'center', background: 'linear-gradient(to bottom, green, #337da5)' }}>
         <Typography>Binance Balance: 0.0000</Typography>
       </Paper>
     </Box>
