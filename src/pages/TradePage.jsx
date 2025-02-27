@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AppBar, Toolbar, Typography, Select, MenuItem, Tabs, Tab, Paper, Grid, Box, Button } from '@mui/material';
+import { AppBar, Toolbar, Typography, Select, MenuItem, Tabs, Tab, Paper, Grid, Box, Button, TextField } from '@mui/material';
 
 // Sample Data
 const initialCoins = [
@@ -11,7 +11,7 @@ const initialCoins = [
 
 // Trade Card Component
 const TradeCard = ({ coin }) => (
-  <Paper sx={{ p: 2, mt: 2, background: 'linear-gradient(to bottom, green, #337da5)', color: 'white', borderRadius: 2 }}>
+  <Paper sx={{ p: 2, mt: 2, background: 'linear-gradient(to bottom, #4bae54, rgb(39 153 220))', color: 'white', borderRadius: 2 }}>
     <Typography variant="h6">{coin.symbol}</Typography>
     <Grid container spacing={1}>
       <Grid item xs={6}><Typography>Quantity: {coin.quantity.toFixed(4)}</Typography></Grid>
@@ -69,6 +69,7 @@ const StopMarginCallSection = () => (
 
 // Main Trading Page
 const TradingPage = () => {
+  const [searchQuery, setSearchQuery] = useState('');   
   const [searchTab, setSearchTab] = useState(0);
   const searchTabs = ['All', 'Circle', 'One Shot', 'Stop Margin Call'];
 
@@ -87,6 +88,14 @@ const TradingPage = () => {
       {/* Search and Tabs */}
       <Paper sx={{ p: 2, mt: 2 }}>
         <Typography variant="h6">Search Currency Name</Typography>
+        <TextField 
+          fullWidth 
+          variant="outlined" 
+          placeholder="Type to search..." 
+          value={searchQuery} 
+          onChange={(e) => setSearchQuery(e.target.value)} 
+          sx={{ mt: 1 }}
+        />
         <Tabs value={searchTab} onChange={(e, newValue) => setSearchTab(newValue)} variant="scrollable" scrollButtons="auto">
           {searchTabs.map((tab, index) => (
             <Tab key={index} label={tab} />
